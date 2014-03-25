@@ -1,0 +1,32 @@
+<DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Canvas Test</title>
+	<style>
+	canvas{
+		border:1px dashed black;
+	}
+	</style>
+	<script>
+	window.onload=function(){
+		var canvas=document.getElementById("drawingCanvas");
+		var context=canvas.getContext("2d");
+		
+		context.moveTo(10,10);
+		context.lineTo(400,10);
+		context.lineTo(200,200);
+		context.lineTo(10,10);
+		
+		context.lineWidth=10;
+		context.strokeStyle="#cd2828";
+		context.lineCap="round";
+		context.fillStyle="blue";
+		context.fill();
+		context.stroke();
+	};
+	</script>
+</head>
+	<canvas id="drawingCanvas" width="500" height="300"></canvas>
+</body>
+</html>
