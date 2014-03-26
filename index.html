@@ -13,5 +13,25 @@
 
 	<body>
 		<canvas id="drawingCanvas" width="512" height="512"></canvas>
+		<script type="text/javascript">
+		window.addEventListener('load',eventWindowLoaded,false);
+		function eventWindowLoaded(){
+			canvasApp();
+		}
+		function canvasApp(){
+		
+			var theCanvas=document.getElementById('canvas');
+			if(!theCanvas||!theCanvas.getContext){
+			return;
+			}
+			var context=theCanvas.getContext('2d');
+			if (!context){
+			return;
+			}
+			var rotation=0;
+			var x=50;
+			var y=50;
+		}
+		</script>
 	</body>
 </html>
