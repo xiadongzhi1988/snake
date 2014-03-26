@@ -5,8 +5,15 @@
 		<title>Snake</title>
 		<link rel="icon" href="favicon.ico">
 		<style>
-		canvas{
-			border:1px dashed black;
+		body {
+			background: #DDD;
+		}
+		canvas {
+			margin-left: 24px;
+			margin-top: 10px;
+			background: #EEE;
+			border: thin solid #aaa;
+			box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
 		}
 		</style>
 		
@@ -17,11 +24,11 @@
 		}
 		function canvasApp(){
 		
-			var theCanvas=document.getElementById("canvas");
-			if(!theCanvas||!theCanvas.getContext){
+			var canvas=document.getElementById("canvas");
+			if(!canvas||!canvas.getContext){
 			return;
 			}
-			var context=theCanvas.getContext("2d");
+			var context=canvas.getContext("2d");
 			if (!context){
 			return;
 			}
@@ -32,33 +39,73 @@
 			var dy=0;
 			
 			function drawScreen(){
-			
+				drawGrid(context, "lightgrey", 16, 16);
+
 				context.fillStyle="#cd2828";
 				context.fillRect(x,y,20,20);
 				context.fill;
-				x+=dx;
-				y+=dy;
+				x += dx;
+				y += dy;
 				
 				
 			}
 			window.onkeydown=processkey;
 			function processkey(e){
-				dx=0;
-				dy=0;
-			if(e.keyCode=38)//Up
-				dy=-1;
-			
-			if(e.keyCode=40)//Down
-				dy=1;
-			
-			if(e.keyCode=37)//Turn Left
-				dx=-1;
-			if(e.keyCode=39)//Turn Right
-				dx=1;
-					
+				var keyCode = e.keyCode;
+
+				switch (keyCode) {
+					case 37:
+					case 65:
+						dx = -2;
+						dy = 0;
+						break;
+					case 38:
+					case 87:
+						dy = -2;
+						dx = 0;
+						break;
+					case 39:
+					case 68:
+						dx = 2;
+						dy = 0;
+						break;
+					case 40:
+					case 83:
+						dy = 2;
+						dx = 0;
+						break;
+					case 82:
+						undo();
+						break;
+				}		
 			}
 			
-			const FRAME_RATE=30;
+
+
+			function drawGrid(context, color, stepx, stepy) {
+				context.clearRect(0, 0, canvas.width, canvas.height);
+				context.save();
+				context.strokeStyle = color;
+				context.lineWidth = 0.5;
+
+				for (var i = stepx + 0.5; i < context.canvas.width; i += stepx) {
+					context.beginPath();
+					context.moveTo(i, 0);
+					context.lineTo(i, context.canvas.height);
+					context.stroke();
+					context.closePath();
+				}
+				
+				for (var i = stepy + 0.5; i < context.canvas.height; i += stepy) {
+					context.beginPath();
+					context.moveTo(0, i);
+					context.lineTo(context.canvas.width, i);
+					context.stroke();
+					context.closePath();
+				}
+				context.restore();
+			}
+			const FRAME_RATE=40;
 			var intervalTime=1000/FRAME_RATE;
 			setInterval(drawScreen,intervalTime);
 			
@@ -67,7 +114,7 @@
 	</head>
 
 	<body>
-		<canvas id="canvas" width="500" height="300"></canvas>
+		<canvas id="canvas" width="500" height="500"></canvas>
 		
 		
 	</body>
