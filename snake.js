@@ -1,45 +1,97 @@
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
-drawGrid(ctx, "lightgrey", 16, 16);
+window.addEventListener('load', eventWindowLoaded, false);
 
+function eventWindowLoaded(){
+	canvasApp();
+}
 
-function canvasApp(){
+function canvasApp() {
+	var canvas = document.getElementById("canvas");
 
-	var canvas = document.getElementById('canvas');
-	
 	if(!canvas||!canvas.getContext){
 		return;
 	}
-	var ctx = canvas.getContext('2d');
+	var context = canvas.getContext("2d");
 
-	if (!ctx){
+	if (!context){
 		return;
 	}
-	var rotation=0;
-	var x=50;
-	var y=50;
-}
+	
+	var x=0;
+	var y=0;
+	var dx=0;
+	var dy=0;
+	
+	function drawScreen(){
+		drawGrid(context, "lightgrey", 16, 16);
 
-function drawGrid(ctx, color, stepx, stepy) {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.save();
-	ctx.strokeStyle = color;
-	ctx.lineWidth = 0.5;
+		context.fillStyle = "#cd2828";
+		context.fillRect(x, y, 20, 20);
+		context.fill;
+		x += dx;
+		y += dy;
+		
+		
+	}
 
-	for (var i = stepx + 0.5; i < ctx.canvas.width; i += stepx) {
-		ctx.beginPath();
-		ctx.moveTo(i, 0);
-		ctx.lineTo(i, ctx.canvas.height);
-		ctx.stroke();
-		ctx.closePath();
+	window.onkeydown = processkey;
+
+	function processkey(e){
+		var keyCode = e.keyCode;
+
+		switch (keyCode) {
+			case 37:
+			case 65:
+				dx = -2;
+				dy = 0;
+				break;
+			case 38:
+			case 87:
+				dy = -2;
+				dx = 0;
+				break;
+			case 39:
+			case 68:
+				dx = 2;
+				dy = 0;
+				break;
+			case 40:
+			case 83:
+				dy = 2;
+				dx = 0;
+				break;
+			case 82:
+				undo();
+				break;
+		}		
 	}
 	
-	for (var i = stepy + 0.5; i < ctx.canvas.height; i += stepy) {
-		ctx.beginPath();
-		ctx.moveTo(0, i);
-		ctx.lineTo(ctx.canvas.width, i);
-		ctx.stroke();
-		ctx.closePath();
+
+
+	function drawGrid(context, color, stepx, stepy) {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.save();
+		context.strokeStyle = color;
+		context.lineWidth = 0.5;
+
+		for (var i = stepx + 0.5; i < context.canvas.width; i += stepx) {
+			context.beginPath();
+			context.moveTo(i, 0);
+			context.lineTo(i, context.canvas.height);
+			context.stroke();
+			context.closePath();
+		}
+		
+		for (var i = stepy + 0.5; i < context.canvas.height; i += stepy) {
+			context.beginPath();
+			context.moveTo(0, i);
+			context.lineTo(context.canvas.width, i);
+			context.stroke();
+			context.closePath();
+		}
+		context.restore();
 	}
-	ctx.restore();
+
+	const FRAME_RATE = 40;
+	var intervalTime = 1000/FRAME_RATE;
+	setInterval(drawScreen, intervalTime);
 }
