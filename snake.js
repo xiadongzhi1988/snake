@@ -22,7 +22,7 @@ function canvasApp() {
 	var dy=0;
 	
 	function drawScreen(){
-		drawGrid(context, "lightgrey", 16, 16);
+		drawGrid(context, "lightgrey", 20, 20);
 
 		context.fillStyle = "#cd2828";
 		context.fillRect(x, y, 20, 20);
@@ -60,12 +60,13 @@ function canvasApp() {
 				dx = 0;
 				break;
 			case 82:
+			case 32:
 				undo();
 				break;
 		}		
 	}
 	
-
+	
 
 	function drawGrid(context, color, stepx, stepy) {
 		context.clearRect(0, 0, canvas.width, canvas.height);
@@ -90,6 +91,28 @@ function canvasApp() {
 		}
 		context.restore();
 	}
+	function boundingBoxCollide(){
+		var left1=0;
+		var left2=x;
+		var right1=canvas.width;
+		var right2=x+20;
+		var top1=0;
+		var top2=y;
+		var bottom1=canvas.height;
+		var bottom2=y+20;
+		if(left1>=left2)return(false);
+		if(right1<=right2)return(false);
+		if(top1>=top2)return(false);
+		if(bottom1>=bottom2)return(false);
+		return(ture);
+	    }
+	function gameover(){
+		if(boundingBoxCollide==false){
+			context.fillStyle="#00B7BF";
+			context.fillRect(0,0,500,300);
+			context.fillStyle("#000000");
+			context.fillText("Game Over",150,130);
+		}
 
 	const FRAME_RATE = 40;
 	var intervalTime = 1000/FRAME_RATE;
