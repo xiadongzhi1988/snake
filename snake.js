@@ -17,10 +17,12 @@ function canvasApp(){
 		
 		var snakeLength = 20;
 		var	snakeHeight = 20;
-		var x=Math.floor(Math.random()*10+1)*snakeLength;
-		var y=Math.floor(Math.random()*10+1)*snakeHeight;
+		var x=60;
+		var y=60;
 		var dx = 0;
 		var dy = 0;
+		var snakeinitLength=3;
+		var snake=new Array();
 		
 	
 		function drawScreen(){
@@ -30,10 +32,20 @@ function canvasApp(){
 			context.fillStyle="#cd2828";
 			x+=dx;
 			y+=dy;
+			//for(var i=x;i>x-snakeinitLength*snakeLength;i-=snakeLength)
 			context.fillRect(x,y,snakeLength,snakeHeight);
 			context.fillRect(x-snakeLength,y,snakeLength,snakeHeight);
+			context.fillRect(x-2*snakeLength,y,snakeLength,snakeHeight);
 			gameover();
 		}
+		
+		function snakeBodyMove(){
+			snake[]={{x:20,y:60},{x:40,y:60},{x:60,y:60}};
+			for(var j=0;j<snakeinitLength-1;j++){
+			snake[j]=snake[j+1]; 
+			}
+			snake[snakeinitLength-1]={{snake[snakeinitLength-2].x+dx,snake[snakeinitLength-2].y+dy}}; 	
+			}
 			
 		window.onkeydown=processkey;
 		function processkey(e){
@@ -41,23 +53,31 @@ function canvasApp(){
 		switch (e.keyCode) {
 			case 37:
 			case 65:
-				dx = -snakeLength;
-				dy = 0;
+				if(dx!=snakeLength)
+				{dx = -snakeLength;
+				dy = 0;}
+				snakeBodyMove();
 				break;
 			case 38:
 			case 87:
-				dy = -snakeHeight;
-				dx = 0;
+				if(dy!=snakeHeight)
+				{dy = -snakeHeight;
+				dx = 0;}
+				snakeBodyMove();
 				break;
 			case 39:
 			case 68:
-				dx = snakeLength;
-				dy = 0;
+				if(dx!=-snakeLength)
+				{dx = snakeLength;
+				dy = 0;}
+				snakeBodyMove();
 				break;
 			case 40:
 			case 83:
-				dy = snakeHeight;
-				dx = 0;
+				if(dy!=-snakeHeight)
+				{dy = snakeHeight;
+				dx = 0;}
+				snakeBodyMove();
 				break;
 				}
 		}		
