@@ -23,9 +23,8 @@ function canvasApp() {
 	var y = 60;
 	var dx = 0;
 	var dy = 0;
-	var m=300;
-	var n=300;
-	var snakeinitLength = 4;
+	var m = 300;
+	var n = 300;
 	var snake = new Array();
 
 	snake = [{x: 20, y: 60}, {x: 40, y: 60}, {x: 60, y: 60}, {x: 80, y: 60}];
@@ -34,30 +33,26 @@ function canvasApp() {
 		drawGrid(context, "lightgrey",snakeLength, snakeHeight);
 		context.font = "30px Arial";
 		context.fillStyle = "#cd2828";
-		/*
-		x += dx;
-		y += dy;
-		context.fillRect(x,y,snakeLength,snakeHeight);
-		context.fillRect(x-snakeLength,y,snakeLength,snakeHeight);
-		context.fillRect(x-2*snakeLength,y,snakeLength,snakeHeight);
-		*/
+		
 		snakeBodyMove();
 		snake[snake.length-1].x += dx;
 		snake[snake.length-1].y += dy;
+
 		for (var i = 0; i < snake.length-1; i++) {
 			context.fillRect(snake[i].x, snake[i].y, 20, 20);
-			}
+		}
 		Growth();	
 		gameover();
 		
 	}
 	
 	function snakeBodyMove() {
+
 		for (var j = 0; j < snake.length-1; j++){
-				snake[j].x = snake[j+1].x;
-				snake[j].y = snake[j+1].y; 			
-			}	
-			
+			snake[j].x = snake[j+1].x;
+			snake[j].y = snake[j+1].y;
+		}
+
 		/*
 		snake[snakeinitLength-1] = {
 			x: snake[snakeinitLength-2].x + dx,
@@ -68,21 +63,30 @@ function canvasApp() {
 	function Growth(){
 		context.fillStyle="#cd2828";
 		context.fillRect(m,n,20,20);
-		if((e.keyCode==37&&m==snake[snake.length-1].x-20&&n==snake[snake.length-1].y)||(e.keyCode==39&&m==snake[snake.length-1].x+20&&n==snake[snake.length-1].y)||(e.keyCode==40&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y+20)||(e.keyCode==38&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y-20)){
-			snake[snake.length].x=m;
-			snake[snake.length].y=n;
-			snake.length+=1;
-			}
-		isFood();
+		/*
+		if((e.keyCode==37&&m==snake[snake.length-1].x-20&&n==snake[snake.length-1].y)
+			||(e.keyCode==39&&m==snake[snake.length-1].x+20&&n==snake[snake.length-1].y)
+			||(e.keyCode==40&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y+20)
+			||(e.keyCode==38&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y-20)) {
+		*/
+
+		if (m == snake[snake.length-1].x && n == snake[snake.length-1].y) {
+			var head = {
+				x: m,
+				y: n
+			};
+			snake.push(head);
+			isFood();
 		}
+	}
 		
 	
 	function isFood(){
-		var m=Math.floor(Math.random()*25)*20;
-		var n=Math.floor(Math.random()*25)*20;
-		}
+		m = Math.floor(Math.random()*25)*20;
+		n = Math.floor(Math.random()*25)*20;
+	}
 		
-	window.onkeydown=processkey;
+	window.onkeydown = processkey;
 	function processkey(e) {
 	switch (e.keyCode) {
 		case 37:
