@@ -68,11 +68,14 @@ function canvasApp() {
 	function Growth(){
 		context.fillStyle="#cd2828";
 		context.fillRect(m,n,20,20);
-		if(m==snake[snake.length-1].x&&n==snake[snake.length-1].y){
+		if((e.keyCode==37&&m==snake[snake.length-1].x-20&&n==snake[snake.length-1].y)||(e.keyCode==39&&m==snake[snake.length-1].x+20&&n==snake[snake.length-1].y)||(e.keyCode==40&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y+20)||(e.keyCode==38&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y-20)){
+			snake[snake.length].x=m;
+			snake[snake.length].y=n;
 			snake.length+=1;
-			isFood();
 			}
+		isFood();
 		}
+		
 	
 	function isFood(){
 		var m=Math.floor(Math.random()*25)*20;
