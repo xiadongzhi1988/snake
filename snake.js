@@ -23,6 +23,8 @@ function canvasApp() {
 	var y = 60;
 	var dx = 0;
 	var dy = 0;
+	var m=300;
+	var n=300;
 	var snakeinitLength = 4;
 	var snake = new Array();
 
@@ -44,16 +46,18 @@ function canvasApp() {
 		snake[snake.length-1].y += dy;
 		for (var i = 0; i < snake.length-1; i++) {
 			context.fillRect(snake[i].x, snake[i].y, 20, 20);
-		}
+			}
+		Growth();	
 		gameover();
+		
 	}
 	
 	function snakeBodyMove() {
-
-		for (var j = 0; j < snakeinitLength-1; j++){
-			snake[j].x = snake[j+1].x;
-			snake[j].y = snake[j+1].y; 
-		}
+		for (var j = 0; j < snake.length-1; j++){
+				snake[j].x = snake[j+1].x;
+				snake[j].y = snake[j+1].y; 			
+			}	
+			
 		/*
 		snake[snakeinitLength-1] = {
 			x: snake[snakeinitLength-2].x + dx,
@@ -61,6 +65,19 @@ function canvasApp() {
 		};
 		*/ 	
 	}
+	function Growth(){
+		context.fillStyle="#cd2828";
+		context.fillRect(m,n,20,20);
+		if(m==snake[snake.length-1].x&&n==snake[snake.length-1].y){
+			snake.length+=1;
+			isFood();
+			}
+		}
+	
+	function isFood(){
+		var m=Math.floor(Math.random()*25)*20;
+		var n=Math.floor(Math.random()*25)*20;
+		}
 		
 	window.onkeydown=processkey;
 	function processkey(e) {
@@ -71,37 +88,41 @@ function canvasApp() {
 				dx = -snakeLength;
 				dy = 0;
 			}
+			//snakeBodyMove();
 			break;
 		case 38:
 		case 87:
 			if(dy!=snakeHeight)
 			{dy = -snakeHeight;
 			dx = 0;}
+			//snakeBodyMove();
 			break;
 		case 39:
 		case 68:
 			if(dx!=-snakeLength)
 			{dx = snakeLength;
 			dy = 0;}
+			//snakeBodyMove();
 			break;
 		case 40:
 		case 83:
 			if(dy!=-snakeHeight)
 			{dy = snakeHeight;
 			dx = 0;}
+			//snakeBodyMove();
 			break;
 			}
 	}		
 	
 	function boundingBoxCollide() {
 		var left1 = 0;
-		var left2 = x;
+		var left2 = snake[snake.length-1].x;
 		var right1 = canvas.width;
-		var right2 = x+20;
+		var right2 = snake[snake.length-1].x+20;
 		var top1 = 0;
-		var top2 = y;
+		var top2 = snake[snake.length-1].y;
 		var bottom1=canvas.height;
-		var bottom2=y+20;
+		var bottom2=snake[snake.length-1].y+20;
 		if(left1 > left2)
 			return false;
 		if(right1 < right2)
@@ -152,4 +173,5 @@ function canvasApp() {
 	const FRAME_RATE = 5;//The game is lowly sensitive to game'FRAME_RATE 
 	var intervalTime = 1000/FRAME_RATE;
 	setInterval(drawScreen, intervalTime);
+		
 }
