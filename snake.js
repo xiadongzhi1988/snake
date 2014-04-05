@@ -31,10 +31,10 @@ function canvasApp() {
 
 	function drawScreen() {	
 		drawGrid(context, "lightgrey",snakeLength, snakeHeight);
-		context.font = "30px Arial";
+		context.font = "50px Arial";
 		context.fillStyle = "#cd2828";
 		
-		snakeBodyMove();
+		if(dx!=0||dy!=0){snakeBodyMove();}
 		snake[snake.length-1].x += dx;
 		snake[snake.length-1].y += dy;
 
@@ -46,13 +46,13 @@ function canvasApp() {
 		
 	}
 	
-	function snakeBodyMove() {
-
+	function snakeBodyMove() {		
+		
 		for (var j = 0; j < snake.length-1; j++){
 			snake[j].x = snake[j+1].x;
 			snake[j].y = snake[j+1].y;
-		}
-
+			}
+		
 		/*
 		snake[snakeinitLength-1] = {
 			x: snake[snakeinitLength-2].x + dx,
@@ -63,19 +63,20 @@ function canvasApp() {
 	function Growth(){
 		context.fillStyle="#cd2828";
 		context.fillRect(m,n,20,20);
-		/*
-		if((e.keyCode==37&&m==snake[snake.length-1].x-20&&n==snake[snake.length-1].y)
-			||(e.keyCode==39&&m==snake[snake.length-1].x+20&&n==snake[snake.length-1].y)
-			||(e.keyCode==40&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y+20)
-			||(e.keyCode==38&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y-20)) {
-		*/
+		
+		if((dx == -snakeLength&&m==snake[snake.length-1].x-20&&n==snake[snake.length-1].y)
+			||(dx == snakeLength&&m==snake[snake.length-1].x+20&&n==snake[snake.length-1].y)
+			||(dy == snakeHeight&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y+20)
+			||(dy == -snakeHeight&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y-20)) {
+		
 
-		if (m == snake[snake.length-1].x && n == snake[snake.length-1].y) {
+		//if (m == snake[snake.length-1].x && n == snake[snake.length-1].y) {
 			var head = {
 				x: m,
 				y: n
-			};
+		};
 			snake.push(head);
+			
 			isFood();
 		}
 	}
@@ -171,8 +172,8 @@ function canvasApp() {
 		context.fillStyle="#00B7BF";
 		context.fillRect(0,0,canvas.width,canvas.height);
 		context.fillStyle="#000000";
-		context.fillText("Game Over",(canvas.width-30*6)/2,(canvas.height-20)/2);
-		x=-1000;
+		context.fillText("Game Over",(canvas.width-35*6)/2,(canvas.height-20)/2);
+		snake[snake.length-1].x=-1000;
 		
 		}
 	}
