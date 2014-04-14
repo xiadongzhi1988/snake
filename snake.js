@@ -1,185 +1,180 @@
-window.addEventListener('load', eventWindowLoaded, false);
+// snake
+var reset = document.getElementById("reset");
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
 
-function eventWindowLoaded() {
-	canvasApp();
+var SNAKE_WIDTH = 20;
+
+var dx = 0;
+var dy = 0;
+var m = 0;
+var n = 0;
+var snake = [];
+var head = 0;
+var loop = null;
+
+reset.onclick = init;
+init();
+
+function init() {
+	clearInterval(loop);
+	dx = 0;
+	dy = 0;
+	snake = [{x: 20, y: 60}, {x: 40, y: 60}, {x: 60, y: 60}, {x: 80, y: 60}];
+	head = snake.length - 1;
+	newFood();
+
+	const FRAME_RATE = 5;
+	var intervalTime = 1000/FRAME_RATE;
+	loop = setInterval(drawScreen, intervalTime);
+
+	window.onkeydown = processkey;
 }
 
-function canvasApp() {	
-	var theCanvas = document.getElementById("canvas");
+function drawScreen() {
+	drawGrid(ctx, "lightgrey", 20, 20);
 
-	if (!theCanvas || !theCanvas.getContext) {
-		return;
+	ctx.font = "50px Arial";
+	ctx.fillStyle = "#cd2828";
+	head = snake.length - 1;
+
+	if(dx != 0 || dy != 0) {
+		snakeMove();
+	}
+	snake[head].x += dx;
+	snake[head].y += dy;
+
+	for (var i = 0; i < head; i++) {
+		ctx.fillRect(snake[i].x, snake[i].y, 20, 20);
 	}
 
-	var context = theCanvas.getContext("2d");
+	snakeGrow();
 
-	if (!context) {
-		return;
-	}
-	
-	var snakeLength = 20;
-	var	snakeHeight = 20;
-	var x = 60;
-	var y = 60;
-	var dx = 0;
-	var dy = 0;
-	var m = 300;
-	var n = 300;
-	var snake = new Array();
-
-	snake = [{x: 20, y: 60}, {x: 40, y: 60}, {x: 60, y: 60}, {x: 80, y: 60}];
-
-	function drawScreen() {	
-		drawGrid(context, "lightgrey",snakeLength, snakeHeight);
-		context.font = "50px Arial";
-		context.fillStyle = "#cd2828";
-		
-		if(dx!=0||dy!=0){snakeBodyMove();}
-		snake[snake.length-1].x += dx;
-		snake[snake.length-1].y += dy;
-
-		for (var i = 0; i < snake.length-1; i++) {
-			context.fillRect(snake[i].x, snake[i].y, 20, 20);
-		}
-		Growth();	
+	if(boundingBoxCollide() ==false) {
 		gameover();
-		
 	}
-	
-	function snakeBodyMove() {		
-		
-		for (var j = 0; j < snake.length-1; j++){
-			snake[j].x = snake[j+1].x;
-			snake[j].y = snake[j+1].y;
+
+	for (var i = 0; i < snake.length-2; i++) {
+		if (snake[head].x == snake[i].x && snake[head]. y == snake[i].y) {
+			if (dx != 0 || dy != 0) {
+				gameover();
 			}
-		
-		/*
-		snake[snakeinitLength-1] = {
-			x: snake[snakeinitLength-2].x + dx,
-			y: snake[snakeinitLength-2].y + dy
+		}
+	}
+}
+
+function processkey(e) {
+switch (e.keyCode) {
+	case 37:
+	case 65:
+		if (dx != SNAKE_WIDTH) {
+			dx = -SNAKE_WIDTH;
+			dy = 0;
+		}
+		break;
+	case 38:
+	case 87:
+		if(dy != SNAKE_WIDTH) {
+			dy = -SNAKE_WIDTH;
+			dx = 0;
+		}
+		break;
+	case 39:
+	case 68:
+		if(dx != -SNAKE_WIDTH) {
+			dx = SNAKE_WIDTH;
+			dy = 0;
+		}
+		break;
+	case 40:
+	case 83:
+		if(dy != -SNAKE_WIDTH) {
+			dy = SNAKE_WIDTH;
+			dx = 0;
+		}
+		break;
+	}
+}
+
+function snakeMove() {
+
+	for (var j = 0; j < head; j++) {
+		snake[j].x = snake[j+1].x;
+		snake[j].y = snake[j+1].y;
+	}	
+}
+
+function snakeGrow(){
+	ctx.fillStyle = "#cd2828";
+	ctx.fillRect(m, n, 20, 20);
+	
+	/*if((dx == -SNAKE_WIDTH&&m==snake[head].x-20&&n==snake[head].y)
+		||(dx == SNAKE_WIDTH&&m==snake[head].x+20&&n==snake[head].y)
+		||(dy == SNAKE_WIDTH&&m==snake[head].x&&n==snake[head].y+20)
+		||(dy == -SNAKE_WIDTH&&m==snake[head].x&&n==snake[head].y-20)) {
+	*/
+	if (m == snake[head].x && n == snake[head].y) {
+		var snakeHead = {
+			x: m,
+			y: n
 		};
-		*/ 	
+		snake.push(snakeHead);
+		newFood();
 	}
-	function Growth(){
-		context.fillStyle="#cd2828";
-		context.fillRect(m,n,20,20);
-		
-		if((dx == -snakeLength&&m==snake[snake.length-1].x-20&&n==snake[snake.length-1].y)
-			||(dx == snakeLength&&m==snake[snake.length-1].x+20&&n==snake[snake.length-1].y)
-			||(dy == snakeHeight&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y+20)
-			||(dy == -snakeHeight&&m==snake[snake.length-1].x&&n==snake[snake.length-1].y-20)) {
-		
+}
 
-		//if (m == snake[snake.length-1].x && n == snake[snake.length-1].y) {
-			var head = {
-				x: m,
-				y: n
-		};
-			snake.push(head);
-			
-			isFood();
+function newFood() {
+	var tempM = Math.floor(Math.random()*25)*20;
+	var tempN = Math.floor(Math.random()*25)*20;
+
+	for (var i = 0; i < snake.length; i++) {
+		if (snake[i].x != tempM && snake[i].y != tempN) {
+			m = tempM;
+			n = tempN;
+		} else {
+			newFood();
 		}
 	}
-		
-	
-	function isFood(){
-		m = Math.floor(Math.random()*25)*20;
-		n = Math.floor(Math.random()*25)*20;
+}
+
+function boundingBoxCollide() {
+	var head = snake.length - 1;
+
+	if(snake[head].x < 0 || snake[head].x > canvas.width-20 ||
+		snake[head].y < 0 ||snake[head].y > canvas.height-20) {
+		return false;
 	}
-		
-	window.onkeydown = processkey;
-	function processkey(e) {
-	switch (e.keyCode) {
-		case 37:
-		case 65:
-			if (dx != snakeLength) {
-				dx = -snakeLength;
-				dy = 0;
-			}
-			//snakeBodyMove();
-			break;
-		case 38:
-		case 87:
-			if(dy!=snakeHeight)
-			{dy = -snakeHeight;
-			dx = 0;}
-			//snakeBodyMove();
-			break;
-		case 39:
-		case 68:
-			if(dx!=-snakeLength)
-			{dx = snakeLength;
-			dy = 0;}
-			//snakeBodyMove();
-			break;
-		case 40:
-		case 83:
-			if(dy!=-snakeHeight)
-			{dy = snakeHeight;
-			dx = 0;}
-			//snakeBodyMove();
-			break;
-			}
-	}		
-	
-	function boundingBoxCollide() {
-		var left1 = 0;
-		var left2 = snake[snake.length-1].x;
-		var right1 = canvas.width;
-		var right2 = snake[snake.length-1].x+20;
-		var top1 = 0;
-		var top2 = snake[snake.length-1].y;
-		var bottom1=canvas.height;
-		var bottom2=snake[snake.length-1].y+20;
-		if(left1 > left2)
-			return false;
-		if(right1 < right2)
-			return false;
-		if(top1 > top2)
-			return false;
-		if(bottom1 < bottom2)
-			return false;
-		return true;
+	return true;
+}
+
+function gameover() {
+	ctx.fillStyle="#00B7BF";
+	ctx.fillRect(0, 0, canvas.width, anvas.height);
+	ctx.fillStyle="#000000";
+	ctx.fillText("Game Over", (canvas.width-35*6)/2, (canvas.height-20)/2);
+	snake[head].x = -1000;
+}
+
+function drawGrid(ctx, color, stepx, stepy) {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.save();
+	ctx.strokeStyle = color;
+	ctx.lineWidth = 0.5;
+
+	for (var i = stepx + 0.5; i <canvas.width; i += stepx) {
+		ctx.beginPath();
+		ctx.moveTo(i, 0);
+		ctx.lineTo(i, canvas.height);
+		ctx.stroke();
+		ctx.closePath();
 	}
 
-	function drawGrid(context, color, stepx, stepy) {
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.save();
-		context.strokeStyle = color;
-		context.lineWidth = 0.5;
-
-		for (var i = stepx + 0.5; i <canvas.width; i += stepx) {
-			context.beginPath();
-			context.moveTo(i, 0);
-			context.lineTo(i, canvas.height);
-			context.stroke();
-			context.closePath();
-		}
-
-		for (var i = stepy + 0.5; i < canvas.height; i += stepy) {
-			context.beginPath();
-			context.moveTo(0, i);
-			context.lineTo(canvas.width, i);
-			context.stroke();
-			context.closePath();
-		}
-		context.restore();
+	for (var i = stepy + 0.5; i < canvas.height; i += stepy) {
+		ctx.beginPath();
+		ctx.moveTo(0, i);
+		ctx.lineTo(canvas.width, i);
+		ctx.stroke();
+		ctx.closePath();
 	}
-	
-	function gameover(){
-		if(boundingBoxCollide() ==false){
-		//while(1)
-		context.fillStyle="#00B7BF";
-		context.fillRect(0,0,canvas.width,canvas.height);
-		context.fillStyle="#000000";
-		context.fillText("Game Over",(canvas.width-35*6)/2,(canvas.height-20)/2);
-		snake[snake.length-1].x=-1000;
-		
-		}
-	}
-	
-	const FRAME_RATE = 5;//The game is lowly sensitive to game'FRAME_RATE 
-	var intervalTime = 1000/FRAME_RATE;
-	setInterval(drawScreen, intervalTime);
-		
+	ctx.restore();
 }
