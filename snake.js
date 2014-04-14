@@ -148,10 +148,10 @@ function boundingBoxCollide() {
 }
 
 function gameover() {
-	ctx.fillStyle="#00B7BF";
-	ctx.fillRect(0, 0, canvas.width, anvas.height);
-	ctx.fillStyle="#000000";
-	ctx.fillText("Game Over", (canvas.width-35*6)/2, (canvas.height-20)/2);
+	ctx.fillStyle = "#00B7BF";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = "#000000";
+	ctx.fillText("Game Over", (canvas.width - 35*6)/2, (canvas.height-20)/2);
 	snake[head].x = -1000;
 }
 
@@ -161,7 +161,7 @@ function drawGrid(ctx, color, stepx, stepy) {
 	ctx.strokeStyle = color;
 	ctx.lineWidth = 0.5;
 
-	for (var i = stepx + 0.5; i <canvas.width; i += stepx) {
+	for (var i = stepx + 0.5; i < canvas.width; i += stepx) {
 		ctx.beginPath();
 		ctx.moveTo(i, 0);
 		ctx.lineTo(i, canvas.height);
